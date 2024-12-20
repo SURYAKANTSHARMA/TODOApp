@@ -11,6 +11,7 @@ struct TODOListView: View {
     
     @State private var navigationPath = NavigationPath()
     @StateObject private var viewModel = TODOListViewModel()
+    @State private var animate = false
     
     var body: some View {
         NavigationStack(path: $navigationPath) {
@@ -71,19 +72,41 @@ extension TODOListView {
                 .fontWeight(.semibold)
                 .padding(.bottom, 10)
             Text("Are you a productive person? I think you should click the add button and add a bunch of items to your todo list!")
-                .padding(.bottom, 10)
+                .padding(.bottom, 16)
             Button(action: {
                 navigationPath.append(Optional<ItemModel>.none)
             }) {
                 Text("Add Something  🧠")
                     .font(.headline)
-                    .padding()
-                    .background(Color.blue)
+                    .padding(animate ? 10 : 20)
+                    .background(animate ? Color.blue : .red)
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .onAppear(perform: animation)
+                    .scaleEffect(animate ? 1.1 : 1.0)
+                    .offset(animate ? .init(width: 0, height: -7) : .zero)
+                    .shadow(
+                        color: animate ? Color.blue.opacity(0.7) : .red.opacity(0.7),
+                        radius: animate ? 30 : 10,
+                        x: 0,
+                        y: animate ? 10 : 20
+                    )
+
+                     
             }
         }
         .padding()
+    }
+    
+    private func animation() {
+        guard !animate else { return }
+        withAnimation(
+            Animation
+                .easeInOut(duration: 2.0)
+                .repeatForever()
+        ) {
+            animate.toggle()
+        }
     }
     
     private var todoListView: some View {
