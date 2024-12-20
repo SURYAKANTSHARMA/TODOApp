@@ -20,7 +20,12 @@ class TODOListViewModel: ObservableObject {
     @Published var items = [ItemModel]()
     private var cancellables = Set<AnyCancellable>()
     
-    init() {
+    let userDefaults: UserDefaults
+    
+    init(
+        userDefaults: UserDefaults = .standard
+    ) {
+        self.userDefaults = userDefaults
         loadItems()
         $items
             .sink { [weak self] items in
@@ -59,12 +64,12 @@ class TODOListViewModel: ObservableObject {
     
     private func saveItems(_ items: [ItemModel]) {
         if let encoded = try? JSONEncoder().encode(items) {
-            UserDefaults.standard.set(encoded, forKey: "todoItems")
+            userDefaults.set(encoded, forKey: "todoItems")
         }
     }
     
     func loadItems() {
-        if let savedItems = UserDefaults.standard.data(forKey: "todoItems"),
+        if let savedItems = userDefaults.data(forKey: "todoItems"),
            let decodedItems = try? JSONDecoder().decode([ItemModel].self, from: savedItems) {
             items = decodedItems
         }
