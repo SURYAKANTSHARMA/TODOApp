@@ -12,7 +12,7 @@ struct TODOListApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                TODOList()
+                TODOListView()
             }
         }
     }

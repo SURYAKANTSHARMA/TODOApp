@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TODOList: View {
+struct TODOListView: View {
     
     @State private var navigationPath = NavigationPath()
     @StateObject private var viewModel = TODOListViewModel()
@@ -57,12 +57,12 @@ struct TODOList: View {
 
 #Preview {
     NavigationStack {
-        TODOList()
+        TODOListView()
     }
 }
 
 	
-extension TODOList {
+extension TODOListView {
     
     private var emptyListView: some View {
         VStack {
@@ -114,13 +114,7 @@ extension TODOList {
             }
             
         }
-        .onDelete(perform: { indexSet in
-            indexSet.forEach { index in
-                viewModel.remove(viewModel.items[index])
-            }
-        })
-        .onMove(perform: { indices, newOffset in
-            viewModel.move(from: indices, to: newOffset)
-        })
+        .onDelete(perform: viewModel.removeItem)
+        .onMove(perform: viewModel.move)
     }
 }

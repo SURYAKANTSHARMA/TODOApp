@@ -33,8 +33,8 @@ class TODOListViewModel: ObservableObject {
         items.append(item)
     }
     
-    func remove(_ item: ItemModel) {
-        items.removeAll { $0.id == item.id }
+    func removeItem(indexSet: IndexSet) {
+        items.remove(atOffsets: indexSet)
     }
     
     func update(_ item: ItemModel) {
