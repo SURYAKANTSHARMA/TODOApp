@@ -10,8 +10,6 @@ import SwiftUI
 struct TODOList: View {
     
     @State private var navigationPath = NavigationPath()
-    @State private var selectedTodoItem: ItemModel?
-    
     @StateObject private var viewModel = TODOListViewModel()
     
     var body: some View {
@@ -42,8 +40,14 @@ struct TODOList: View {
                 case .none:
                     NewEditTodoItemView(item: .constant(nil))
                         .environmentObject(viewModel)
-                case .some(_):
-                    NewEditTodoItemView(item: $selectedTodoItem)
+                case .some(let item):
+                    NewEditTodoItemView(item: Binding(
+                        get: { item },
+                        set: { if let item = $0 {
+                              viewModel.update(item)
+                            }
+                        })
+                    )
                     .environmentObject(viewModel)
             }
         }
@@ -91,7 +95,7 @@ extension TODOList {
                     .foregroundColor(item.isCompleted ? .gray : .primary)
                     .swipeActions(edge: .leading) { // Swipe from left
                         Button {
-                            selectedTodoItem = item
+                            print("Edit: \(item)")
                             navigationPath.append(Optional<ItemModel>.some(item))
                         } label: {
                             Label("Edit", systemImage: "pencil")
